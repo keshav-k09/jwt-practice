@@ -2,6 +2,9 @@
 package com.example.jwt_practice.controller;
 
 import com.example.jwt_practice.service.jwtService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,14 +13,16 @@ public class authController {
 
     private final jwtService js;
 
-    public authController(jwtService js) {
+    private final AuthenticationManager authenticationManager;
+    public authController(jwtService js,AuthenticationManager authenticationManager) {
         this.js = js;
+        this.authenticationManager=authenticationManager;
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username) {
+    public String login(@RequestParam String username,@RequestParam String password) {
+        Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
 
-        System.out.println("LOGIN CONTROLLER REACHED");
 
         return js.generateToken(username);
     }

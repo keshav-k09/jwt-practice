@@ -18,7 +18,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 @Configuration
+@EnableMethodSecurity
 public class securityconfig {
 
     @Bean
@@ -27,17 +30,29 @@ public class securityconfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(
-            PasswordEncoder passwordEncoder) {
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
 
-        UserDetails testUser = User.builder()
-                .username("testuser")
-                .password(passwordEncoder.encode("password123"))
+        UserDetails user = User.builder()
+                .username("user1")
+                .password(passwordEncoder.encode("user123"))
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(testUser);
+        UserDetails manager = User.builder()
+                .username("manager1")
+                .password(passwordEncoder.encode("manager123"))
+                .roles("MANAGER")
+                .build();
+
+        UserDetails admin = User.builder()
+                .username("admin1")
+                .password(passwordEncoder.encode("admin123"))
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, manager, admin);
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(
